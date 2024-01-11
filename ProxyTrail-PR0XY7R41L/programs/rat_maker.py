@@ -24,7 +24,9 @@ while True:
         ip = input("IP>")
         port = input("PORT>")
 
+        print("")
         print(payloads[n][1].replace("<ip>", ip).replace("<port>", f"{port}"))
+        print("")
         break
 
     except:
