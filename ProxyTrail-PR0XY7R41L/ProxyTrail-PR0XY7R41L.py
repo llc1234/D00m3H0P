@@ -14,8 +14,8 @@ colorama.init()
 programs = [
     ["TCP_server",     "version 1.0.0"],
     ["TCP_client",     "version 1.0.0"],
-    ["rat_maker",      "version 0.7.0"],
-    ["backdoor_maker", "version 0.1.0"]
+    ["rat_maker",      "version 0.9.0"],
+    ["backdoor_maker", "version 0.4.0"]
 ]
 
 while True:
